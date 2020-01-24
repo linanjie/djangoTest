@@ -12,9 +12,12 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 
 import os
 
+# 这里用到了python中一个神奇的变量 __file__ 这个变量可以获取到当前文件（包含这个代码的文件）的路径。
+# os.path.dirname(__file__) 得到文件所在目录，再来一个os.path.dirname()就是目录的上一级，
+# BASE_DIR 即为 项目 所在目录。我们在后面的与目录有关的变量都用它，这样使得移植性更强
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
@@ -23,10 +26,13 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 'u$3u=_zg8r=po@nhh(9@3%svle2#i@2_e10857!l95yuh#xkta'
 
 # SECURITY WARNING: don't run with debug turned on in production!
+# DEBUG＝True 时，如果出现 bug 便于我们看见问题所在，但是部署时最好不要让用户看见bug的详情，
+# 可能一些不怀好心的人攻击网站，造成不必要的麻烦。
 DEBUG = True
 
+# ALLOWED_HOSTS 允许你设置哪些域名可以访问，即使在 Apache 或 Nginx 等中绑定了，这里不允许的话，也是不能访问的。
+# 当 DEBUG=False 时，这个为必填项，如果不想输入，可以用 ALLOW_HOSTS = ['*'] 来允许所有的。
 ALLOWED_HOSTS = []
-
 
 # Application definition
 
@@ -55,6 +61,7 @@ ROOT_URLCONF = 'djangoTest.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        # 可以把模板文件放在templates文件夹中了
         'DIRS': [os.path.join(BASE_DIR, 'templates')]
         ,
         'APP_DIRS': True,
@@ -71,7 +78,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'djangoTest.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
 
@@ -81,7 +87,6 @@ DATABASES = {
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/2.2/ref/settings/#auth-password-validators
@@ -101,7 +106,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/2.2/topics/i18n/
 
@@ -115,8 +119,19 @@ USE_L10N = True
 
 USE_TZ = True
 
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
+# 一般来说我们只要把静态文件放在APP中的static目录下，部署时用python manage.py collectstatic就可以把静态文件收集到（复制到） STATIC_ROOT 目录，但是有时我们有一些共用的静态文件，这时候可以设置 STATICFILES_DIRS 另外弄一个文件夹
 STATIC_URL = '/static/'
+
+# 当运行 python manage.py collectstatic 的时候
+# STATIC_ROOT 文件夹 是用来将所有STATICFILES_DIRS中所有文件夹中的文件，以及各app中static中的文件都复制过来
+# 把这些文件放到一起是为了用apache等部署的时候更方便
+STATIC_ROOT = os.path.join(BASE_DIR, 'collected_static')
+
+# 其它存放静态文件的文件夹，可以用来存放项目中公用的静态文件，里面不能包含STATIC_ROOT
+# 如果不想用STATICFILES_DIRS可以不用，都放在app里的static中也可以
+
+# 这个是默认设置，Django 默认会在 STATICFILES_DIRS中的文件夹 和 各app下的static文件夹中找文件
+# 注意有先后顺序，找到了就不再继续找了

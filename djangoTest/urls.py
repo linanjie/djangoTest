@@ -17,10 +17,16 @@ from django.contrib import admin
 from django.urls import path
 from djangoTestApp import views as calc_views
 
-urlpatterns = [
-    path('',calc_views.home,name = 'home'),
-    # 第一个参数是正则表达式
-    path('add/<int:a>/<int:b>/',calc_views.add,name = 'add'),
-    path('admin/', admin.site.urls),
-]
+# from django.conf.urls import patterns, include, url
 
+from django.contrib import admin
+
+admin.autodiscover()
+
+urlpatterns = [
+    path('', calc_views.home, name='home'),
+    # 第一个参数是正则表达式
+    path('add/<int:a>/<int:b>/', calc_views.add, name='add'),
+    path('admin/', admin.site.urls),
+    # patterns('')
+]

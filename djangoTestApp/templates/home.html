@@ -10,10 +10,65 @@ Hello World
 {#{{ string }}#}
 {#简单总结一下：一般的变量之类的用 {{ }}（变量），功能类的，比如循环，条件判断是用 {%  %}（标签）#}
 教程列表：
-{% for foo in TurtorList %}
-    <br>
-    {{ foo }}
+{#{% for foo in TurtorList %}#}
+{#    <br>#}
+{#    {{ foo }}#}
+{#{% endfor %}#}
+
+{#第一种遍历字典方法#}
+{#站点：#}
+{#{{ info_dict.site }}#}
+{#内容：#}
+{#{{ info_dict.content }}#}
+
+<br>
+{#第二种遍历字典方法#}
+{#{% for key,value in info_dict.items %}#}
+{#{{ key }}:{{ value }}#}
+{#{% endfor %}#}
+
+{% for item in List %}
+    {# 用变量forloop.last 这个变量，如果是最后一项其为真，否则为假#}
+    {{ item }}{% if not forloop.last %},{% endif %}
 {% endfor %}
 
+{#当列表中可能为空值时用 for  empty#}
+<ul>
+{% for athlete in athlete_list %}
+    <li>{{ athlete.name }}</li>
+{% empty %}
+    <li>抱歉，列表为空</li>
+{% endfor %}
+
+{% url 'add' 4 5 %}
+{% url 'add' 4 5 as the_url %}
+<a href="{{ the_url }}">链接到：{{ the_url }}</a>
+
+{% if var >= 90 %}
+成绩优秀，自强学堂你没少去吧！学得不错
+{% elif var >= 80 %}
+成绩良好
+{% elif var >= 70 %}
+成绩一般
+{% elif var >= 60 %}
+需要努力
+{% else %}
+不及格啊，大哥！多去自强学堂学习啊！
+{% endif %}
+
+{% if num <= 100 and num >= 0 %}
+num在0到100之间
+{% else %}
+数值不在范围之内！
+{% endif %}
+
+<br>
+{#建议在 views.py 中用的 render 函数，而不是 render_to_response，这样在 模板中我们就可以获取到 request 变量。#}
+{#获取当前用户#}
+{{ request.user }}
+{#获取get参数#}
+{{ request.path }}
+
+</ul>
 </body>
 </html>
